@@ -477,7 +477,7 @@ PrefabInstance:
     - target: {fileID: 6930810734943986774, guid: cca6164bb2744884a92a100266f5f3aa, type: 3}
       propertyPath: m_text
       value: These are the available projects in your network. Please click on any
-        project and open the AR-scene.
+        project to open the AR-scene.
       objectReference: {fileID: 0}
     - target: {fileID: 6930810734943986774, guid: cca6164bb2744884a92a100266f5f3aa, type: 3}
       propertyPath: m_HorizontalAlignment
