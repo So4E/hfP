@@ -96,6 +96,11 @@ public class UICreation : MonoBehaviour
 
     private void SpawnUIPanel(string _title)
     {
+        /* https://learn.microsoft.com/de-de/dotnet/api/system.string.isnullorempty?view=net-8.0 using NET iwas dazu??
+         * if (String.isNullOrEmpty(_title))
+         {
+             _title = "new panel";
+         }*/
         //get coordinates where to spawn panel with offset to new object panel and instantiate it
         Vector3 _positionNextToNewObjectPanel = NewObjectWindow.transform.position + new Vector3(0.3f, 0, 0);
         GameObject _panel = Instantiate(UIPanel, _positionNextToNewObjectPanel, Quaternion.identity); //prefab, position, rotation
@@ -115,7 +120,7 @@ public class UICreation : MonoBehaviour
 
     private void SpawnText(string _inputText)
     {
-        //todo - initialize text and set text to _inputText
+        //todo - initialize text and set text to _inputText (in case it is empty use default text 'text' already in prefab)
 
         //todo - this text is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently if ui prototype
         //is supposed to be used and further edited in UDE
@@ -123,7 +128,7 @@ public class UICreation : MonoBehaviour
 
     private void SpawnButton(string _inputText)
     {
-        //todo - initialize button and set button text to _inputText
+        //todo - initialize button and set button text to _inputText (in case it is empty use default text 'button' already in prefab)
     }
 
     //*********** further to do for UI prototyping
