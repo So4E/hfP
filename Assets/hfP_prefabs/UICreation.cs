@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -41,7 +42,7 @@ public class UICreation : MonoBehaviour
         if (_currentUIPanel == null)
         {
             NoPanelSelectedErrorMessage.SetActive(true);
-            //Todo check if transform needs to be set to offset to newObject window, in case this was placed somewhere else by the user, so that this window is seen by them
+            SetPositionNextToNewObjectWindow(NoPanelSelectedErrorMessage);
             return;
         }
         switch (element)
@@ -58,11 +59,18 @@ public class UICreation : MonoBehaviour
         }
     }
 
+    private void SetPositionNextToNewObjectWindow(GameObject _objectToRelocate)
+    {
+        Vector3 _positionNextToNewObjectPanel = NewObjectWindow.transform.position + new Vector3(0.3f, 0, 0);
+        _objectToRelocate.transform.position = _positionNextToNewObjectPanel;
+    }
+
     private void openTextEnterWindow(string _description)
     {
         TextEnterWindow.SetActive(true);
         GameObject _descriptionText = getChildGameObject(TextEnterWindow, "Description_Text");
-        _descriptionText.GetComponent<TMP_Text>().SetText(_description);
+        _descriptionText.GetComponent<TMP_Text>().SetText(_description); //might be better to exchange getComponent in case of performance issues
+        SetPositionNextToNewObjectWindow(TextEnterWindow);
     }
 
     public void OpenSystemKeyboard()
@@ -96,11 +104,10 @@ public class UICreation : MonoBehaviour
 
     private void SpawnUIPanel(string _title)
     {
-        /* https://learn.microsoft.com/de-de/dotnet/api/system.string.isnullorempty?view=net-8.0 using NET iwas dazu??
-         * if (String.isNullOrEmpty(_title))
+         if (String.IsNullOrEmpty(_title))
          {
              _title = "new panel";
-         }*/
+         }
         //get coordinates where to spawn panel with offset to new object panel and instantiate it
         Vector3 _positionNextToNewObjectPanel = NewObjectWindow.transform.position + new Vector3(0.3f, 0, 0);
         GameObject _panel = Instantiate(UIPanel, _positionNextToNewObjectPanel, Quaternion.identity); //prefab, position, rotation
@@ -120,15 +127,24 @@ public class UICreation : MonoBehaviour
 
     private void SpawnText(string _inputText)
     {
-        //todo - initialize text and set text to _inputText (in case it is empty use default text 'text' already in prefab)
-
-        //todo - this text is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently if ui prototype
-        //is supposed to be used and further edited in UDE
+        GameObject _textField = Instantiate(UIText, _currentUIPanel.transform);
+        if (!String.IsNullOrEmpty(_inputText))
+        {
+            GameObject _textComponent = getChildGameObject(_textField, "TextText");
+            _textComponent.transform.GetComponent<TMP_Text>().SetText(_inputText);
+        }
+        //note - this text object is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently later
+        // if UI prototype is supposed to be used and further edited in UDE
     }
 
     private void SpawnButton(string _inputText)
     {
-        //todo - initialize button and set button text to _inputText (in case it is empty use default text 'button' already in prefab)
+        GameObject _button = Instantiate(UIButton, _currentUIPanel.transform);
+        if (!String.IsNullOrEmpty(_inputText))
+        {
+            GameObject _textComponent = getChildGameObject(_button, "ButtonText");
+            _textComponent.transform.GetComponent<TMP_Text>().SetText(_inputText);
+        }
     }
 
     //*********** further to do for UI prototyping

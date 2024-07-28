@@ -12,13 +12,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2521469530607976645, guid: e4331f7f6a77d9c4da157622af6877fe, type: 3}
+      propertyPath: m_Name
+      value: TextText
+      objectReference: {fileID: 0}
     - target: {fileID: 2731880801470902506, guid: e4331f7f6a77d9c4da157622af6877fe, type: 3}
       propertyPath: m_text
-      value: Text
+      value: New Text
       objectReference: {fileID: 0}
     - target: {fileID: 5439043354933223111, guid: e4331f7f6a77d9c4da157622af6877fe, type: 3}
       propertyPath: m_Name
-      value: Positive (2) Variant
+      value: protoText_Positive
       objectReference: {fileID: 0}
     - target: {fileID: 5439043354933223128, guid: e4331f7f6a77d9c4da157622af6877fe, type: 3}
       propertyPath: m_Pivot.x
