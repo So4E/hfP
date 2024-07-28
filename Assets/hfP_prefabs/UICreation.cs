@@ -46,7 +46,7 @@ public class UICreation : MonoBehaviour
         if (element != "panel" && _currentUIPanel == null)
         {
             NoPanelSelectedErrorMessage.SetActive(true);
-            SetPositionNextToNewObjectWindow(NoPanelSelectedErrorMessage); //todo - why is panel not displayed next to new object window but behind it?
+            PositionNextTo(NoPanelSelectedErrorMessage, NewObjectWindow); //todo - why is panel not displayed next to new object window but behind it?
             return;
         }
         switch (element)
@@ -66,10 +66,10 @@ public class UICreation : MonoBehaviour
         }
     }
 
-    private void SetPositionNextToNewObjectWindow(GameObject _objectToRelocate)
+    private void PositionNextTo(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
     {
-        Vector3 _positionNextToNewObjectPanel = NewObjectWindow.transform.position + new Vector3(0.3f, 0, 0);
-        _objectToRelocate.transform.position = _positionNextToNewObjectPanel;
+        Vector3 _positionRightOfObject = _objectToPositionItNextTo.transform.position + new Vector3(0.3f, 0, 0);
+        _objectToRelocate.transform.position = _positionRightOfObject;
     }
 
     private void OpenTextEnterWindow(string _description)
@@ -77,7 +77,7 @@ public class UICreation : MonoBehaviour
         TextEnterWindow.SetActive(true);
         TMP_Text _descriptionText = GetChildTMPText(TextEnterWindow, "Description_Text");
         _descriptionText.SetText(_description); //might be better to exchange getComponent in case of performance issues
-        SetPositionNextToNewObjectWindow(TextEnterWindow);
+        PositionNextTo(TextEnterWindow, NewObjectWindow);
     }
 
     public void OpenSystemKeyboard()
@@ -115,14 +115,15 @@ public class UICreation : MonoBehaviour
 
     private void SpawnUIPanel(string _title)
     {
-         if (String.IsNullOrEmpty(_title))
+         if (String.IsNullOrEmpty(_title.Trim())) //todo - does not work -> check, otherwise panel has no header.. no name.. etc.
          {
              _title = "new panel";
          }
         //get coordinates where to spawn panel with offset to new object panel and text enter panel and instantiate it
-        Vector3 _positionNextToNewObjectPanel = NewObjectWindow.transform.position + new Vector3(0.6f, 0, 0);
-        GameObject _panel = Instantiate(UIPanel, _positionNextToNewObjectPanel, Quaternion.identity); //prefab, position, rotation
+        Vector3 _positionNextToTextEnterWindow = TextEnterWindow.transform.position + new Vector3(0.3f, 0, 0);
+        GameObject _panel = Instantiate(UIPanel, _positionNextToTextEnterWindow, Quaternion.identity); //prefab, position, rotation
         _panel.transform.SetParent(UIPrototypingParent.transform, true); //position stays
+        _panel.name = "Panel_" + _title;
 
         //set Header to _panelName
         TMP_Text _header = GetChildTMPText(_panel, "Header");
@@ -138,6 +139,7 @@ public class UICreation : MonoBehaviour
         {
             TMP_Text _textComponent = GetChildTMPText(_textField, "TextText");
             _textComponent.SetText(_inputText);
+            _textField.name = _inputText;
         }
         //note - the text object is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently later
         // if UI prototype is supposed to be used and further edited in UDE
@@ -152,7 +154,7 @@ public class UICreation : MonoBehaviour
     {
         _gameObjectToEdit = _objectToBeEdited;
         EditUIElement.SetActive(true);
-        //change position of EditUIElement to next to element
+        PositionNextTo(EditUIElement, _currentUIPanel);
     }
 
     public void OnDelete()
@@ -174,11 +176,12 @@ public class UICreation : MonoBehaviour
 
     private void EditNameOfObject(string _newName)
     {
-        // how to find TMP_Text object to set to new name?
-        // _gameObjectToEdit. text = auf _newName setzen
+        TMP_Text _textComponent = GetChildTMPText(_gameObjectToEdit, "TextText");
+        _textComponent.SetText(_newName);
+        _gameObjectToEdit.name = _newName;
     }
 
-    
+
 
     //*********** further to do for UI prototyping
     //where to open list of created ui panels, how to open them again and set current panel to that ui
