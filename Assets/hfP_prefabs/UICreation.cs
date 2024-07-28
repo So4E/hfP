@@ -11,6 +11,7 @@ public class UICreation : MonoBehaviour
     [SerializeField] private GameObject UIPrototypingParent;
     [SerializeField] private GameObject UIPanel;
     [SerializeField] private GameObject UIButton;
+    [SerializeField] private GameObject UITwoButtons;
     [SerializeField] private GameObject UIText;
 
     [SerializeField] private GameObject TextEnterWindow;
@@ -27,7 +28,7 @@ public class UICreation : MonoBehaviour
         if (keyboard != null && TextEnterWindow.activeSelf == true) //&& TextEnterWindow is active
         {
             string _keyboardInput = keyboard.text;
-            TextEnterWindowText.GetComponent<TMP_Text>().SetText(_keyboardInput);
+            TextEnterWindowText.SetText(_keyboardInput);
         }
     }
 
@@ -36,22 +37,25 @@ public class UICreation : MonoBehaviour
         _whatToInitialize = element;
         if (element == "panel")
         {
-            openTextEnterWindow("Please enter a name for your Panel here");
+            OpenTextEnterWindow("Please enter a name for your Panel here");
             return;
         }
-        if (_currentUIPanel == null)
+        if (element != "panel" && _currentUIPanel == null)
         {
             NoPanelSelectedErrorMessage.SetActive(true);
-            SetPositionNextToNewObjectWindow(NoPanelSelectedErrorMessage);
+            SetPositionNextToNewObjectWindow(NoPanelSelectedErrorMessage); //todo - why is panel not displayed next to new object window but behind it?
             return;
         }
         switch (element)
         {          
             case "text":
-                openTextEnterWindow("Please enter your text for the text field here");
+                OpenTextEnterWindow("Please enter your text for the text field here");
                 break;            
             case "button":
-                openTextEnterWindow("Please enter your label text for the button here");
+                OpenTextEnterWindow("Please enter your label text for the button here");
+                break;            
+            case "twoButtons":
+                SpawnTwoButtons();
                 break;            
             default:
                 //what to do as default?
@@ -65,11 +69,11 @@ public class UICreation : MonoBehaviour
         _objectToRelocate.transform.position = _positionNextToNewObjectPanel;
     }
 
-    private void openTextEnterWindow(string _description)
+    private void OpenTextEnterWindow(string _description)
     {
         TextEnterWindow.SetActive(true);
-        GameObject _descriptionText = getChildGameObject(TextEnterWindow, "Description_Text");
-        _descriptionText.GetComponent<TMP_Text>().SetText(_description); //might be better to exchange getComponent in case of performance issues
+        TMP_Text _descriptionText = GetChildTMPText(TextEnterWindow, "Description_Text");
+        _descriptionText.SetText(_description); //might be better to exchange getComponent in case of performance issues
         SetPositionNextToNewObjectWindow(TextEnterWindow);
     }
 
@@ -80,25 +84,22 @@ public class UICreation : MonoBehaviour
 
     public void OnClickConfirm()
     {
-        if (keyboard != null)
+        string _textInput = TextEnterWindowText.text;
+        TextEnterWindowText.SetText(""); //todo - why is this not working????
+        switch (_whatToInitialize)
         {
-            string _keyboardText = keyboard.text;
-
-            switch (_whatToInitialize)
-            {
-                case "panel":
-                    SpawnUIPanel(_keyboardText);
-                    break;
-                case "text":
-                    SpawnText(_keyboardText);
-                    break;
-                case "button":
-                    SpawnButton(_keyboardText);
-                    break;
-                default:
-                    //todo - what to do as default?
-                    break;
-            }
+            case "panel":
+                SpawnUIPanel(_textInput);
+                break;
+            case "text":
+                SpawnText(_textInput);
+                break;
+            case "button":
+                SpawnButton(_textInput);
+                break;
+            default:
+                //todo - what to do as default?
+                break;
         }
     }
 
@@ -108,30 +109,25 @@ public class UICreation : MonoBehaviour
          {
              _title = "new panel";
          }
-        //get coordinates where to spawn panel with offset to new object panel and instantiate it
-        Vector3 _positionNextToNewObjectPanel = NewObjectWindow.transform.position + new Vector3(0.3f, 0, 0);
+        //get coordinates where to spawn panel with offset to new object panel and text enter panel and instantiate it
+        Vector3 _positionNextToNewObjectPanel = NewObjectWindow.transform.position + new Vector3(0.6f, 0, 0);
         GameObject _panel = Instantiate(UIPanel, _positionNextToNewObjectPanel, Quaternion.identity); //prefab, position, rotation
         _panel.transform.SetParent(UIPrototypingParent.transform, true); //position stays
 
         //set Header to _panelName
-        GameObject _header = getChildGameObject(_panel, "Header");
-        if (_header == null)
-        {
-            Debug.Log("header not found");
-            return;
-        }
-        _header.transform.GetComponent<TMP_Text>().SetText(_title);
+        TMP_Text _header = GetChildTMPText(_panel, "Header");
+        _header.SetText(_title);
         _currentUIPanel = _panel;
         _createdUIPanels.Add(_panel);
     }
 
     private void SpawnText(string _inputText)
     {
-        GameObject _textField = Instantiate(UIText, _currentUIPanel.transform);
+        GameObject _textField = Instantiate(UIText, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
         if (!String.IsNullOrEmpty(_inputText))
         {
-            GameObject _textComponent = getChildGameObject(_textField, "TextText");
-            _textComponent.transform.GetComponent<TMP_Text>().SetText(_inputText);
+            TMP_Text _textComponent = GetChildTMPText(_textField, "TextText");
+            _textComponent.SetText(_inputText);
         }
         //note - this text object is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently later
         // if UI prototype is supposed to be used and further edited in UDE
@@ -139,25 +135,40 @@ public class UICreation : MonoBehaviour
 
     private void SpawnButton(string _inputText)
     {
-        GameObject _button = Instantiate(UIButton, _currentUIPanel.transform);
+        GameObject _button = Instantiate(UIButton, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
         if (!String.IsNullOrEmpty(_inputText))
         {
-            GameObject _textComponent = getChildGameObject(_button, "ButtonText");
-            _textComponent.transform.GetComponent<TMP_Text>().SetText(_inputText);
+            TMP_Text _textComponent = GetChildTMPText(_button, "ButtonText");
+            _textComponent.SetText(_inputText);
         }
+    }
+
+    private void SpawnTwoButtons()
+    {
+        Instantiate(UITwoButtons, GetChildGameObject(_currentUIPanel, "Canvas").transform);
     }
 
     //*********** further to do for UI prototyping
     //where to open list of created ui panels, how to open them again and set current panel to that ui
-    //make onClick method for created ui panel to reedit the object created (text, delete, duplicate)
+    //make onClick method for created ui panel to re-edit the object created (text, delete, duplicate)
 
     //utility
-    private GameObject getChildGameObject(GameObject fromGameObject, string withName)
+    private GameObject GetChildGameObject(GameObject fromGameObject, string withName)
     {
         //Author: Isaac Dart, June-13. link: https://discussions.unity.com/t/how-to-find-a-child-gameobject-by-name/31255/2
         Transform[] ts = fromGameObject.transform.GetComponentsInChildren<Transform>();
         foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject;
         return null;
     }
+    
+    
+    private TMP_Text GetChildTMPText(GameObject fromGameObject, string withName)
+    {
+        Transform[] ts = fromGameObject.transform.GetComponentsInChildren<Transform>();
+        foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject.GetComponent<TMP_Text>();
+        return null;
+    }
+
+
 
 }
