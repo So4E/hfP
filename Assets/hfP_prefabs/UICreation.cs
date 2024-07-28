@@ -14,14 +14,17 @@ public class UICreation : MonoBehaviour
     [SerializeField] private GameObject UITwoButtons;
     [SerializeField] private GameObject UIText;
 
+    [SerializeField] private GameObject EditUIElement;
     [SerializeField] private GameObject TextEnterWindow;
     [SerializeField] private TMP_Text TextEnterWindowText;
     [SerializeField] private GameObject NoPanelSelectedErrorMessage;
     [SerializeField] private TouchScreenKeyboard keyboard;
 
     private GameObject _currentUIPanel;
+    private GameObject _gameObjectToEdit;
     private List<GameObject> _createdUIPanels = new List<GameObject>();
     private string _whatToInitialize = "nothing";
+    private bool _updateElement = false;
 
     private void Update()
     {
@@ -82,20 +85,27 @@ public class UICreation : MonoBehaviour
         keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false);
     }
 
-    public void OnClickConfirm()
+    public void OnClickConfirm() // _updateElement == true update element
     {
         string _textInput = TextEnterWindowText.text;
         TextEnterWindowText.SetText(""); //todo - why is this not working????
+        if (_updateElement)
+        {
+            EditNameOfObject(_textInput);
+            _updateElement = false;
+            return;
+        }
+        //spawn
         switch (_whatToInitialize)
         {
             case "panel":
                 SpawnUIPanel(_textInput);
                 break;
             case "text":
-                SpawnText(_textInput);
+                SpawnElement(_textInput, UIText);
                 break;
             case "button":
-                SpawnButton(_textInput);
+                SpawnElement(_textInput, UIButton);
                 break;
             default:
                 //todo - what to do as default?
@@ -121,32 +131,54 @@ public class UICreation : MonoBehaviour
         _createdUIPanels.Add(_panel);
     }
 
-    private void SpawnText(string _inputText)
+    private void SpawnElement(string _inputText, GameObject _whatToSpawn)
     {
-        GameObject _textField = Instantiate(UIText, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
+        GameObject _textField = Instantiate(_whatToSpawn, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
         if (!String.IsNullOrEmpty(_inputText))
         {
             TMP_Text _textComponent = GetChildTMPText(_textField, "TextText");
             _textComponent.SetText(_inputText);
         }
-        //note - this text object is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently later
+        //note - the text object is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently later
         // if UI prototype is supposed to be used and further edited in UDE
-    }
-
-    private void SpawnButton(string _inputText)
-    {
-        GameObject _button = Instantiate(UIButton, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
-        if (!String.IsNullOrEmpty(_inputText))
-        {
-            TMP_Text _textComponent = GetChildTMPText(_button, "ButtonText");
-            _textComponent.SetText(_inputText);
-        }
     }
 
     private void SpawnTwoButtons()
     {
         Instantiate(UITwoButtons, GetChildGameObject(_currentUIPanel, "Canvas").transform);
     }
+
+    public void OnEditUIElement(GameObject _objectToBeEdited)
+    {
+        _gameObjectToEdit = _objectToBeEdited;
+        EditUIElement.SetActive(true);
+        //change position of EditUIElement to next to element
+    }
+
+    public void OnDelete()
+    {
+        Destroy(_gameObjectToEdit);
+        EditUIElement.SetActive(false);
+    }
+
+    public void OnDuplicate()
+    {
+        Instantiate(_gameObjectToEdit); //check if this really does the trick or if any parent e.g. has to be set
+    }
+
+    public void OnEdit()
+    {
+        _updateElement = true;
+        OpenTextEnterWindow("please enter new text here");
+    }
+
+    private void EditNameOfObject(string _newName)
+    {
+        // how to find TMP_Text object to set to new name?
+        // _gameObjectToEdit. text = auf _newName setzen
+    }
+
+    
 
     //*********** further to do for UI prototyping
     //where to open list of created ui panels, how to open them again and set current panel to that ui
