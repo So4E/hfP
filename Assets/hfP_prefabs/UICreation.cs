@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using MixedReality.Toolkit.UX;
 
 public class UICreation : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class UICreation : MonoBehaviour
     private string _whatToInitialize = "nothing";
     private bool _updateElement = false;
 
-    private void Update()
+    private void Update() //check if this works on hololens
     {
         if (keyboard != null && TextEnterWindow.activeSelf == true) //&& TextEnterWindow is active
         {
@@ -61,7 +62,7 @@ public class UICreation : MonoBehaviour
                 SpawnTwoButtons();
                 break;            
             default:
-                //what to do as default?
+                // throw error - object not found
                 break;
         }
     }
@@ -78,6 +79,8 @@ public class UICreation : MonoBehaviour
         TMP_Text _descriptionText = GetChildTMPText(TextEnterWindow, "Description_Text");
         _descriptionText.SetText(_description); //might be better to exchange getComponent in case of performance issues
         PositionNextTo(TextEnterWindow, NewObjectWindow);
+        //Set text to nothing
+        TextEnterWindowText.SetText(""); //************************* todo - why is this not working
     }
 
     public void OpenSystemKeyboard()
@@ -88,7 +91,6 @@ public class UICreation : MonoBehaviour
     public void OnClickConfirm() // _updateElement == true update element
     {
         string _textInput = TextEnterWindowText.text;
-        TextEnterWindowText.SetText(""); //todo - why is this not working????
         if (_updateElement)
         {
             EditNameOfObject(_textInput);
@@ -124,6 +126,8 @@ public class UICreation : MonoBehaviour
         GameObject _panel = Instantiate(UIPanel, _positionNextToTextEnterWindow, Quaternion.identity); //prefab, position, rotation
         _panel.transform.SetParent(UIPrototypingParent.transform, true); //position stays
         _panel.name = "Panel_" + _title;
+        GameObject _xButton = GetChildGameObject(_panel, "x_Action Button");
+        _xButton.GetComponent<PressableButton>().OnClicked.AddListener(() => OnClosePanel());
 
         //set Header to _panelName
         TMP_Text _header = GetChildTMPText(_panel, "Header");
@@ -134,20 +138,33 @@ public class UICreation : MonoBehaviour
 
     private void SpawnElement(string _inputText, GameObject _whatToSpawn)
     {
-        GameObject _textField = Instantiate(_whatToSpawn, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
-        if (!String.IsNullOrEmpty(_inputText))
-        {
-            TMP_Text _textComponent = GetChildTMPText(_textField, "TextText");
-            _textComponent.SetText(_inputText);
-            _textField.name = _inputText;
-        }
+        GameObject _element = Instantiate(_whatToSpawn, GetChildGameObject(_currentUIPanel, "Canvas").transform);
+        _element.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditUIElement(_element));
+        
+        if (String.IsNullOrEmpty(_inputText)) { _inputText = _whatToSpawn.name; }
+        TMP_Text _textComponent = GetChildTMPText(_element, "TextText");
+        _textComponent.SetText(_inputText);
+        _element.name = _inputText;
+
         //note - the text object is a differently formatted button to make easy user editing possible on HoloLens -> must be handled differently later
         // if UI prototype is supposed to be used and further edited in UDE
     }
 
     private void SpawnTwoButtons()
     {
-        Instantiate(UITwoButtons, GetChildGameObject(_currentUIPanel, "Canvas").transform);
+        GameObject _horizontalLayoutGroup = Instantiate(UITwoButtons, GetChildGameObject(_currentUIPanel, "Canvas").transform);
+        // spawn two buttons with this parent
+        GameObject _elementOne = Instantiate(UIButton, _horizontalLayoutGroup.transform);
+        _elementOne.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditUIElement(_elementOne));        
+        GameObject _elementTwo = Instantiate(UIButton, _horizontalLayoutGroup.transform);
+        _elementTwo.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditUIElement(_elementTwo));
+
+    }
+
+    public void OnClosePanel() //todo - add to xButtonon Panel when panel is created
+    {
+        _currentUIPanel = null;
+        EditUIElement.SetActive(false);
     }
 
     public void OnEditUIElement(GameObject _objectToBeEdited)
@@ -155,6 +172,7 @@ public class UICreation : MonoBehaviour
         _gameObjectToEdit = _objectToBeEdited;
         EditUIElement.SetActive(true);
         PositionNextTo(EditUIElement, _currentUIPanel);
+        GetChildTMPText(EditUIElement, "Header").SetText(_objectToBeEdited.name);
     }
 
     public void OnDelete()
@@ -165,13 +183,16 @@ public class UICreation : MonoBehaviour
 
     public void OnDuplicate()
     {
-        Instantiate(_gameObjectToEdit); //check if this really does the trick or if any parent e.g. has to be set
+        GameObject _clone = Instantiate(_gameObjectToEdit, GetChildGameObject(_currentUIPanel, "Canvas").transform); //doesnt work for button in horizontal layout group.. 
+        _clone.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditUIElement(_clone));
     }
 
     public void OnEdit()
     {
         _updateElement = true;
         OpenTextEnterWindow("please enter new text here");
+        TextEnterWindowText.GetComponent<TMP_Text>().SetText(_gameObjectToEdit.name); //todo - why is this not working???? *********************
+
     }
 
     private void EditNameOfObject(string _newName)
