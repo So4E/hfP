@@ -28,7 +28,8 @@ public class UICreation : MonoBehaviour
     private GameObject _gameObjectToEdit;
     private List<GameObject> _createdUIPanels = new List<GameObject>();
     private string _whatToInitialize = "nothing";
-    private bool _updateElement = false;
+    private bool _updateUIElement = false;
+    private bool _updateUIPanel = false;
 
     private void Update() //check if this works on hololens
     {
@@ -80,9 +81,10 @@ public class UICreation : MonoBehaviour
     {
         TextEnterWindow.SetActive(true);
         TMP_Text _descriptionText = GetChildTMPText(TextEnterWindow, "Description_Text");
-        _descriptionText.SetText(_description); //might be better to exchange getComponent in case of performance issues
+        _descriptionText.SetText(_description);
         PositionNextTo(TextEnterWindow, NewObjectWindow);
-        //Set text to nothing
+
+        //Set text in inputField to nothing
         TextEnterWindowText.SetText(""); //************************* todo - why is this not working
     }
 
@@ -94,12 +96,22 @@ public class UICreation : MonoBehaviour
     public void OnClickConfirm() // _updateElement == true update element
     {
         string _textInput = TextEnterWindowText.text;
-        if (_updateElement)
+        if (_updateUIElement)
         {
             EditNameOfObject(_textInput);
-            _updateElement = false;
+            _updateUIElement = false;
             return;
         }
+        if (_updateUIPanel)
+        {
+            _currentUIPanel.name = "Panel_" + _textInput;
+            TMP_Text _header = GetChildTMPText(_currentUIPanel, "Header");
+            _header.SetText(_currentUIPanel.name);
+            _updateUIPanel = false;
+            EditNameOfObject("Panel_" + _textInput);
+            return;
+        }
+
         //spawn
         switch (_whatToInitialize)
         {
@@ -194,10 +206,9 @@ public class UICreation : MonoBehaviour
 
     public void OnEdit()
     {
-        _updateElement = true;
+        _updateUIElement = true;
         OpenTextEnterWindow("please enter new text here");
         TextEnterWindowText.GetComponent<TMP_Text>().SetText(_gameObjectToEdit.name); //todo - why is this not working???? *********************
-
     }
 
     private void EditNameOfObject(string _newName)
@@ -282,7 +293,9 @@ public class UICreation : MonoBehaviour
 
     public void OnRenamePanel()
     {
-         
+        _updateUIPanel = true;
+        OpenTextEnterWindow("please enter new name for panel here");
+        TextEnterWindowText.GetComponent<TMP_Text>().SetText(_gameObjectToEdit.name); //todo - why is this not working???? *********************
     }
 
     public void OnOpenPanel()
