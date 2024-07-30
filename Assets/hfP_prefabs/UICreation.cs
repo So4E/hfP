@@ -10,6 +10,7 @@ public class UICreation : MonoBehaviour
 
     [SerializeField] private GameObject NewObjectWindow;
     [SerializeField] private GameObject PanelOverview;
+    [SerializeField] private GameObject PanelButtonParent;
     [SerializeField] private GameObject PanelButton;
     [SerializeField] private GameObject UIPrototypingParent;
     [SerializeField] private GameObject UIPanel;
@@ -149,6 +150,17 @@ public class UICreation : MonoBehaviour
         _header.SetText(_title);
         _currentUIPanel = _panel;
         _createdUIPanels.Add(_panel);
+
+        //case new panel is created while panel overview is open
+        if (PanelOverview.activeSelf == true)
+        {
+            ClearPanelOverviewList();
+            CreatePanelList();
+            //due to content size fitter.. :
+            PanelOverview.SetActive(false);
+            PanelOverview.SetActive(true);
+            //alternative: just create one extra button here ?
+        }
     }
 
     private void SpawnElement(string _inputText, GameObject _whatToSpawn)
@@ -185,8 +197,12 @@ public class UICreation : MonoBehaviour
     //*********** Edit UI Element in Panel
     public void OnEditUIElement(GameObject _objectToBeEdited)
     {
+        Debug.Log("This element called the OnEditUIElement() method: " + _objectToBeEdited.name);
         _gameObjectToEdit = _objectToBeEdited;
         EditUIElement.SetActive(true);
+        Debug.Log("Element to reposition: " + EditUIElement.name);
+        Debug.Log("Element to position it next to: " + _currentUIPanel.name);
+
         PositionNextTo(EditUIElement, _currentUIPanel);
         GetChildTMPText(EditUIElement, "Header").SetText(_objectToBeEdited.name);
     }
@@ -223,42 +239,34 @@ public class UICreation : MonoBehaviour
     public void OpenListOfProtoPanels()
     {
         PanelOverview.SetActive(true);
-        DeletePanelList();
+        ClearPanelOverviewList();
         CreatePanelList();
     }
 
-    private void DeletePanelList()
+    private void ClearPanelOverviewList()
     {
-        try
+        foreach(Transform t in PanelButtonParent.transform)
         {
-            GameObject _canvas = PanelOverview.transform.GetChild(0).gameObject;
-            for (int i = 3 + _createdUIPanels.Count; i > 3; i--)
-            {
-                Debug.Log("Destroying index: " + i + " with name: " + _canvas.transform.GetChild(i).gameObject.name);
-                Destroy(_canvas.transform.GetChild(i).gameObject);
-            }
-        } catch (Exception firstTimeCalled)
-        {
-            Debug.Log("Panel List Window opened first time. created panels count = " + _createdUIPanels.Count + " but no panelButtons spawned yet");
+            Destroy(t.gameObject);
         }
     }
 
     private void CreatePanelList()
     {
-        GameObject _panelOverviewCanvas = GetChildGameObject(PanelOverview, "Canvas");
         for (int i = 0; i < _createdUIPanels.Count; i++)
         {
             //create one panel button for each name in list
-            GameObject _panelButtonElement = Instantiate(PanelButton, _panelOverviewCanvas.transform);
-            _panelButtonElement.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditPanel(_panelButtonElement));
+            GameObject _panelButtonElement = Instantiate(PanelButton, PanelButtonParent.transform);
+            _panelButtonElement.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditPanelInList(_panelButtonElement));
 
             TMP_Text _textComponent = GetChildTMPText(_panelButtonElement, "TextText");
             _textComponent.SetText(_createdUIPanels[i].name);
             _panelButtonElement.name = _textComponent.text;
         }
+
     }
 
-    public void OnEditPanel(GameObject _panelButtonToEdit)
+    public void OnEditPanelInList(GameObject _panelButtonToEdit)
     {
         _gameObjectToEdit = _panelButtonToEdit;
         _currentUIPanel = FindPanelToEditInList(_panelButtonToEdit.name);
@@ -286,8 +294,8 @@ public class UICreation : MonoBehaviour
     public void OnDeletePanel()
     {
         _createdUIPanels.Remove(_currentUIPanel);
-        Destroy(_currentUIPanel);
-        Destroy(_gameObjectToEdit);
+        Destroy(_currentUIPanel); //actual panel
+        Destroy(_gameObjectToEdit); //panelButton in list
         EditUIPanel.SetActive(false);
     }
 
@@ -301,6 +309,7 @@ public class UICreation : MonoBehaviour
     public void OnOpenPanel()
     {
         _currentUIPanel.SetActive(true);
+        //todo - cover case that you open panel from overview list, then click on another panel in list, close list and want to edit open panel - then _current panel is not set 
     }
 
     //*********** further to do for UI prototyping
