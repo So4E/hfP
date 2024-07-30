@@ -209,9 +209,24 @@ public class UICreation : MonoBehaviour
 
     public void OnDelete()
     {
+        //check if parent of object to delete is called "TwoButtons_Horizontal" if this is the case and object is the only child, also delete parent
+        GameObject _thisElementsParent = _gameObjectToEdit.transform.parent.gameObject;
+        if (_thisElementsParent.name == "TwoButtons_Horizontal(Clone)")
+        {
+            int _howManyChildren = 0;
+            foreach (Transform t in _thisElementsParent.transform)
+            {
+                _howManyChildren++;
+            }
+            if(_howManyChildren == 1)
+            {
+                Destroy(_thisElementsParent);
+                EditUIElement.SetActive(false);
+                return;
+            }
+        }
         Destroy(_gameObjectToEdit);
         EditUIElement.SetActive(false);
-        //todo - check if parent of object to delete is called "TwoButtons_Horizontal" if this is the case and object is the only child, also delete parent
     }
 
     public void OnDuplicate()
