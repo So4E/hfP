@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class SpeechAnnotations : MonoBehaviour
 {
+    [SerializeField] private GameObject AnnotationOverview;
+    [SerializeField] private GameObject AnnotationButtonParent;
+    [SerializeField] private GameObject AnnotationButton;
+    [SerializeField] private GameObject EditAnnotationWindow;
+
+
     private List<AudioClip> _createdAnnotations = new List<AudioClip>();
 
     // Start is called before the first frame update
@@ -13,6 +19,11 @@ public class SpeechAnnotations : MonoBehaviour
         {
             Debug.Log("Name: " + device);
         }
+    }
+
+    public void OpenAllAnnotationsList()
+    {
+
     }
 
     public void RecordSpeechAnnotation()

@@ -156,9 +156,6 @@ public class UICreation : MonoBehaviour
         {
             ClearPanelOverviewList();
             CreatePanelList();
-            //due to content size fitter.. :
-            PanelOverview.SetActive(false);
-            PanelOverview.SetActive(true);
             //alternative: just create one extra button here ?
         }
     }
