@@ -2868,10 +2868,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87fc82d5a52836e48b40daf390664ef8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ToolsWindow: {fileID: 196134162}
   AnnotationOverview: {fileID: 1467904581}
   AnnotationButtonParent: {fileID: 1051391847}
   AnnotationButton: {fileID: 5439043354933223111, guid: f19f14a0f1a2eac40890c7dc73030456, type: 3}
-  EditAnnotationWindow: {fileID: 0}
+  AnnotationControlWindow: {fileID: 680444476}
+  AnnotationObject: {fileID: 2890119415550150756, guid: e5e3e9d8636408f4b96e90756c76e1dc, type: 3}
 --- !u!4 &109791327
 Transform:
   m_ObjectHideFlags: 0
@@ -3009,7 +3011,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -3024,6 +3026,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 111479321}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 109791326}
+    - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -3036,15 +3042,23 @@ PrefabInstance:
       value: Play
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OpenAllAnnotationsList
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UnityEngine.AudioSource, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: UnityEngine.AudioSource, UnityEngine
+      value: SpeechAnnotations, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
       propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8376646494505211226, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
+      propertyPath: <OnClicked>k__BackingField.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8376646494505211228, guid: c6b351a67ceb69140b199996bbbea156, type: 3}
@@ -11387,7 +11401,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7654746717824875, guid: 1d8b1107d96e4e6488a545ad40fe78c8, type: 3}
       propertyPath: m_Name
-      value: SpeechAnnotation
+      value: SpeechAnnotationControl
       objectReference: {fileID: 0}
     - target: {fileID: 278862794693977529, guid: 1d8b1107d96e4e6488a545ad40fe78c8, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11870,6 +11884,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d8b1107d96e4e6488a545ad40fe78c8, type: 3}
+--- !u!1 &680444476 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7654746717824875, guid: 1d8b1107d96e4e6488a545ad40fe78c8, type: 3}
+  m_PrefabInstance: {fileID: 680444475}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &683730563
 GameObject:
   m_ObjectHideFlags: 0
@@ -38960,7 +38979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8894268432447120031, guid: 949dff6849b76334b85055130b8df5af, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 102.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8894268432447120031, guid: 949dff6849b76334b85055130b8df5af, type: 3}
       propertyPath: m_AnchoredPosition.y

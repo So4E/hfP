@@ -72,12 +72,6 @@ public class UICreation : MonoBehaviour
         }
     }
 
-    private void PositionNextTo(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
-    {
-        Vector3 _positionRightOfObject = _objectToPositionItNextTo.transform.position + new Vector3(0.3f, 0, 0);
-        _objectToRelocate.transform.position = _positionRightOfObject;
-    }
-
     private void OpenTextEnterWindow(string _description)
     {
         TextEnterWindow.SetActive(true);
@@ -275,7 +269,6 @@ public class UICreation : MonoBehaviour
             _textComponent.SetText(_createdUIPanels[i].name);
             _panelButtonElement.name = _textComponent.text;
         }
-
     }
 
     public void OnEditPanelInList(GameObject _panelButtonToEdit)
@@ -324,12 +317,14 @@ public class UICreation : MonoBehaviour
         //todo - cover case that you open panel from overview list, then click on another panel in list, close list and want to edit open panel - then _current panel is not set 
     }
 
-    //*********** further to do for UI prototyping
-    //where to open list of created ui panels, how to open them again and set current panel to that ui
-    //how to rename panel
-    
-
     //utility
+
+    private void PositionNextTo(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
+    {
+        Vector3 _positionRightOfObject = _objectToPositionItNextTo.transform.position + new Vector3(0.3f, 0, 0);
+        _objectToRelocate.transform.position = _positionRightOfObject;
+    }
+
     private GameObject GetChildGameObject(GameObject fromGameObject, string withName)
     {
         //Author: Isaac Dart, June-13. link: https://discussions.unity.com/t/how-to-find-a-child-gameobject-by-name/31255/2
