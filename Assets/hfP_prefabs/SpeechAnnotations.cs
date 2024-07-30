@@ -9,11 +9,16 @@ public class SpeechAnnotations : MonoBehaviour
 {
     [SerializeField] private GameObject ToolsWindow;
     [SerializeField] private GameObject AnnotationNameWindow;
+    [SerializeField] private TMP_Text AnnotationNameWindowText;
     [SerializeField] private GameObject AnnotationOverview;
     [SerializeField] private GameObject AnnotationButtonParent;
     [SerializeField] private GameObject AnnotationButton;
     [SerializeField] private GameObject AnnotationControlWindow;
+    [SerializeField] private TMP_Text AnnotationControlWindowObjectText;
     [SerializeField] private GameObject AnnotationObject;
+
+    [SerializeField] private TouchScreenKeyboard keyboard;
+
 
     private GameObject _currentAnnotation;
     private GameObject _currentObjectToBeAnnotated; //not needed? 
@@ -30,6 +35,15 @@ public class SpeechAnnotations : MonoBehaviour
         foreach (string device in Microphone.devices)
         {
             Debug.Log("Name: " + device);
+        }
+    }
+
+    private void Update() //check if this works on hololens
+    {
+        if (keyboard != null && AnnotationNameWindow.activeSelf == true) //&& TextEnterWindow is active
+        {
+            string _keyboardInput = keyboard.text;
+            AnnotationNameWindowText.SetText(_keyboardInput);
         }
     }
 
@@ -79,30 +93,41 @@ public class SpeechAnnotations : MonoBehaviour
     //********************** 
 
     //** Create Annotation - Called via Annotation Button when Object Is Selected
-    public void CreateAnnotation(GameObject _objectToBeAnnotated)
+    public void CreateAnnotation(GameObject _objectToBeAnnotated) //todo - how to add object here? -> selectionManager for selected objects must call this method
     {
-        //todo - open text input window to name Annotation, place it next to Calling Element-> then if Confirm
+        //todo - place text input window next to Calling Element
+        AnnotationNameWindow.SetActive(true);
         _currentObjectToBeAnnotated = _objectToBeAnnotated;
         _currentAnnotation = Instantiate(AnnotationObject, _objectToBeAnnotated.transform);
         _createdAnnotations.Add(_currentAnnotation);
+        //now waiting for user to input name and confirm
+    }
+
+    public void OnExitNameOfAnnotation()
+    {
+        Destroy(_currentAnnotation);
     }
 
     public void OnConfirmNameOfAnnotation()
     {
-        //get text input from input field
-        //_currentAnnotation.name = text input;
+        string _textInput = AnnotationNameWindowText.text;
+        _currentAnnotation.name = "Annotation_" + _textInput;
+        AnnotationControlWindow.SetActive(true);
+        AnnotationControlWindowObjectText.SetText(" * " + _currentAnnotation.name + " * ");
     }
 
     //********************** 
 
-    //** Annotation Options - Called via AnnotationControl Window
+    //** Annotation Options - Called via AnnotationControl Window ----------------------------------hier weitermachen """"""""""""""""""""""
 
     public void StartRecordingAnnotation()
     {
         AudioSource aud = GetComponent<AudioSource>();
         aud.clip = Microphone.Start("Built-in Microphone", true, 10, 44100); //public static AudioClip Start(string deviceName, bool loop, int lengthSec, int frequency); 
         _createdAudioClips.Add(aud.clip);
+        //audio clip iwo abspeichern in ordnerstruktur?
         //TODO ------------------ create object in scene to which audio is attached, that can be clicked on to har audio/ edit/ rerecord etc. 
+        //_currentAnnotation - audio clip komponente finden, clip adden
 
     }
 
@@ -115,7 +140,7 @@ public class SpeechAnnotations : MonoBehaviour
     // -- Delete Button
     public void DeleteSpeechAnnotation()
     {
-        //delete audio button from list and object in scene 
+        //delete audio button from list and object in scene  und audio clip von audioclip liste und aus ordnerstruktur
         //close all windows to edit this audio file
         //set currentAnnotation to null
     }
