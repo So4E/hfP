@@ -8,6 +8,7 @@ using MixedReality.Toolkit.UX;
 public class SpeechAnnotations : MonoBehaviour
 {
     [SerializeField] private GameObject ToolsWindow;
+    [SerializeField] private GameObject AnnotationNameWindow;
     [SerializeField] private GameObject AnnotationOverview;
     [SerializeField] private GameObject AnnotationButtonParent;
     [SerializeField] private GameObject AnnotationButton;
@@ -15,6 +16,7 @@ public class SpeechAnnotations : MonoBehaviour
     [SerializeField] private GameObject AnnotationObject;
 
     private GameObject _currentAnnotation;
+    private GameObject _currentObjectToBeAnnotated; //not needed? 
 
     private List<AudioClip> _createdAudioClips = new List<AudioClip>();
     private List<GameObject> _createdAnnotations = new List<GameObject>();
@@ -31,6 +33,8 @@ public class SpeechAnnotations : MonoBehaviour
         }
     }
 
+
+    //** All Annotations List - Called via Tools
     public void OpenAllAnnotationsList()
     {
         AnnotationOverview.SetActive(true);
@@ -72,25 +76,55 @@ public class SpeechAnnotations : MonoBehaviour
         //get currentAnnotation from list and save to edit
     }
 
-    public void RecordSpeechAnnotation()
+    //********************** 
+
+    //** Create Annotation - Called via Annotation Button when Object Is Selected
+    public void CreateAnnotation(GameObject _objectToBeAnnotated)
+    {
+        //todo - open text input window to name Annotation, place it next to Calling Element-> then if Confirm
+        _currentObjectToBeAnnotated = _objectToBeAnnotated;
+        _currentAnnotation = Instantiate(AnnotationObject, _objectToBeAnnotated.transform);
+        _createdAnnotations.Add(_currentAnnotation);
+    }
+
+    public void OnConfirmNameOfAnnotation()
+    {
+        //get text input from input field
+        //_currentAnnotation.name = text input;
+    }
+
+    //********************** 
+
+    //** Annotation Options - Called via AnnotationControl Window
+
+    public void StartRecordingAnnotation()
     {
         AudioSource aud = GetComponent<AudioSource>();
         aud.clip = Microphone.Start("Built-in Microphone", true, 10, 44100); //public static AudioClip Start(string deviceName, bool loop, int lengthSec, int frequency); 
         _createdAudioClips.Add(aud.clip);
         //TODO ------------------ create object in scene to which audio is attached, that can be clicked on to har audio/ edit/ rerecord etc. 
+
     }
 
+    // -- Listen Button
     public void PlaySpeechAnnotation()
     {
         // _currentAnnotation daraus audioClipComponente, dann  audioClip.Play();
     }
-
+    
+    // -- Delete Button
     public void DeleteSpeechAnnotation()
     {
         //delete audio button from list and object in scene 
         //close all windows to edit this audio file
         //set currentAnnotation to null
     }
+
+    // -- Save Button
+
+
+    //********************** 
+
 
     //utility
 
