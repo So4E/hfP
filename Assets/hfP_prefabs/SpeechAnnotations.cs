@@ -105,6 +105,7 @@ public class SpeechAnnotations : MonoBehaviour
 
     public void OnExitNameOfAnnotation()
     {
+        //todo - find object on list first and delete from list - otherwise a list element which is null remains?
         Destroy(_currentAnnotation);
     }
 
@@ -155,8 +156,8 @@ public class SpeechAnnotations : MonoBehaviour
 
     private void PositionNextTo(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
     {
-        Vector3 _positionRightOfObject = _objectToPositionItNextTo.transform.position + new Vector3(0.3f, 0, 0);
-        _objectToRelocate.transform.position = _positionRightOfObject;
+        _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
+        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.right * .3f;
     }
 
 

@@ -21,7 +21,7 @@ public class UICreation : MonoBehaviour
     [SerializeField] private GameObject EditUIElement;
     [SerializeField] private GameObject EditUIPanel;
     [SerializeField] private GameObject TextEnterWindow;
-    [SerializeField] private TMP_Text TextEnterWindowText;
+    [SerializeField] private MRTKTMPInputField TextEnterWindowText;
     [SerializeField] private GameObject NoPanelSelectedErrorMessage;
     [SerializeField] private TouchScreenKeyboard keyboard;
 
@@ -32,12 +32,12 @@ public class UICreation : MonoBehaviour
     private bool _updateUIElement = false;
     private bool _updateUIPanel = false;
 
-    private void Update() //check if this works on hololens
+    private void Update() //todo -- no keyboard displayed on hololense... 
     {
         if (keyboard != null && TextEnterWindow.activeSelf == true) //&& TextEnterWindow is active
         {
             string _keyboardInput = keyboard.text;
-            TextEnterWindowText.SetText(_keyboardInput);
+            TextEnterWindowText.text = _keyboardInput;
         }
     }
 
@@ -52,7 +52,7 @@ public class UICreation : MonoBehaviour
         if (element != "panel" && _currentUIPanel == null)
         {
             NoPanelSelectedErrorMessage.SetActive(true);
-            PositionNextTo(NoPanelSelectedErrorMessage, NewObjectWindow); //todo - why is panel not displayed next to new object window but behind it?
+            PositionNextTo(NoPanelSelectedErrorMessage, NewObjectWindow);
             return;
         }
         switch (element)
@@ -80,17 +80,18 @@ public class UICreation : MonoBehaviour
         PositionNextTo(TextEnterWindow, NewObjectWindow);
 
         //Set text in inputField to nothing
-        TextEnterWindowText.SetText(""); //************************* todo - why is this not working
+        TextEnterWindowText.text = ""; 
     }
 
     public void OpenSystemKeyboard()
     {
-        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false);
+        //keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false);
     }
 
     public void OnClickConfirm() // _updateElement == true update element
     {
         string _textInput = TextEnterWindowText.text;
+        if (String.IsNullOrWhiteSpace(_textInput)) { _textInput = ""; }
         if (_updateUIElement)
         {
             EditNameOfObject(_textInput);
@@ -127,14 +128,15 @@ public class UICreation : MonoBehaviour
 
     private void SpawnUIPanel(string _title)
     {
-         if (String.IsNullOrEmpty(_title.Trim())) //todo - does not work -> check, otherwise panel has no header.. no name.. etc.
+         if (String.IsNullOrEmpty(_title))
          {
-             _title = "new panel";
+             _title = "Panel_new panel";
          }
-        //get coordinates where to spawn panel with offset to new object panel and text enter panel and instantiate it
-        Vector3 _positionNextToTextEnterWindow = TextEnterWindow.transform.position + new Vector3(0.3f, 0, 0);
-        GameObject _panel = Instantiate(UIPanel, _positionNextToTextEnterWindow, Quaternion.identity); //prefab, position, rotation
-        _panel.transform.SetParent(UIPrototypingParent.transform, true); //position stays
+
+         //revised version with Position next to
+        GameObject _panel = Instantiate(UIPanel, UIPrototypingParent.transform);
+        PositionNextTo(_panel, TextEnterWindow);
+
         _panel.name = "Panel_" + _title;
         GameObject _xButton = GetChildGameObject(_panel, "x_Action Button");
         _xButton.GetComponent<PressableButton>().OnClicked.AddListener(() => OnClosePanel());
@@ -222,15 +224,16 @@ public class UICreation : MonoBehaviour
 
     public void OnDuplicate()
     {
-        GameObject _clone = Instantiate(_gameObjectToEdit, GetChildGameObject(_currentUIPanel, "Canvas").transform); //doesnt work for button in horizontal layout group.. 
+        GameObject _clone = Instantiate(_gameObjectToEdit, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
         _clone.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditUIElement(_clone));
+        //workaroud: spawn new button and name the same and set text to same value !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     }
 
     public void OnEdit()
     {
         _updateUIElement = true;
         OpenTextEnterWindow("please enter new text here");
-        TextEnterWindowText.GetComponent<TMP_Text>().SetText(_gameObjectToEdit.name); //todo - why is this not working???? *********************
+        TextEnterWindowText.text =_gameObjectToEdit.name; // check if name is right or need to get text component ---
     }
 
     private void EditNameOfObject(string _newName)
@@ -245,6 +248,7 @@ public class UICreation : MonoBehaviour
     public void OpenListOfProtoPanels()
     {
         PanelOverview.SetActive(true);
+        PositionNextTo(PanelOverview, NewObjectWindow);
         ClearPanelOverviewList();
         CreatePanelList();
     }
@@ -308,7 +312,7 @@ public class UICreation : MonoBehaviour
     {
         _updateUIPanel = true;
         OpenTextEnterWindow("please enter new name for panel here");
-        TextEnterWindowText.GetComponent<TMP_Text>().SetText(_gameObjectToEdit.name); //todo - why is this not working???? *********************
+        TextEnterWindowText.text = _gameObjectToEdit.name;  // check if name is right or need to get text component ---
     }
 
     public void OnOpenPanel()
@@ -319,10 +323,10 @@ public class UICreation : MonoBehaviour
 
     //utility
 
-    private void PositionNextTo(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
+    private void PositionNextTo(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo) 
     {
-        Vector3 _positionRightOfObject = _objectToPositionItNextTo.transform.position + new Vector3(0.3f, 0, 0);
-        _objectToRelocate.transform.position = _positionRightOfObject;
+        _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
+        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.right * .3f;
     }
 
     private GameObject GetChildGameObject(GameObject fromGameObject, string withName)

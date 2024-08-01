@@ -1,0 +1,139 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &5522222709331905037
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 189245729653895548, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527597720218562111, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 739809802765867868, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1383653277728269118, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1547771033818799799, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2743734415695344524, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788359083835903198, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3096713591961479423, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802085631340061212, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4356109107597309498, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5365878068246254448, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5633261822938306772, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090341, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_Name
+      value: BoundingBoxWithHandlesVariant
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671351296789090343, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711108000947130060, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5715303648484916638, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095641019203833185, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6096930606889794736, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6221155870201029216, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6601472751645577924, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7282594969110709453, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7856453474603385183, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
+      propertyPath: maintainGlobalSize
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7b542306e34a62f4c9a822fcb19b7d99, type: 3}
