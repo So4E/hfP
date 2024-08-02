@@ -22,7 +22,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5439043354933223111, guid: e4331f7f6a77d9c4da157622af6877fe, type: 3}
       propertyPath: m_Name
-      value: protoText_Positive
+      value: Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 5439043354933223111, guid: e4331f7f6a77d9c4da157622af6877fe, type: 3}
+      propertyPath: m_TagString
+      value: Text
       objectReference: {fileID: 0}
     - target: {fileID: 5439043354933223128, guid: e4331f7f6a77d9c4da157622af6877fe, type: 3}
       propertyPath: m_Pivot.x

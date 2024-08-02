@@ -88,10 +88,10 @@ public class UICreation : MonoBehaviour
         //keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false);
     }
 
-    public void OnClickConfirm() // _updateElement == true update element
+    public void OnClickConfirm()
     {
         string _textInput = TextEnterWindowText.text;
-        if (String.IsNullOrWhiteSpace(_textInput)) { _textInput = ""; }
+        if (String.IsNullOrEmpty(_textInput)) { _textInput = ""; }
         if (_updateUIElement)
         {
             EditNameOfObject(_textInput);
@@ -100,15 +100,15 @@ public class UICreation : MonoBehaviour
         }
         if (_updateUIPanel)
         {
-            _currentUIPanel.name = "Panel_" + _textInput;
+            if(String.IsNullOrEmpty(_textInput)) { _textInput = "updated panelName"; }
+            _currentUIPanel.name = _textInput;
             TMP_Text _header = GetChildTMPText(_currentUIPanel, "Header");
             _header.SetText(_currentUIPanel.name);
             _updateUIPanel = false;
-            EditNameOfObject("Panel_" + _textInput);
+            EditNameOfObject(_textInput);
             return;
         }
 
-        //spawn
         switch (_whatToInitialize)
         {
             case "panel":
@@ -130,18 +130,16 @@ public class UICreation : MonoBehaviour
     {
          if (String.IsNullOrEmpty(_title))
          {
-             _title = "Panel_new panel";
+             _title = "new panel";
          }
 
-         //revised version with Position next to
         GameObject _panel = Instantiate(UIPanel, UIPrototypingParent.transform);
         PositionNextTo(_panel, TextEnterWindow);
 
-        _panel.name = "Panel_" + _title;
+        _panel.name = _title;
         GameObject _xButton = GetChildGameObject(_panel, "x_Action Button");
         _xButton.GetComponent<PressableButton>().OnClicked.AddListener(() => OnClosePanel());
 
-        //set Header to _panelName
         TMP_Text _header = GetChildTMPText(_panel, "Header");
         _header.SetText(_title);
         _currentUIPanel = _panel;
@@ -152,7 +150,6 @@ public class UICreation : MonoBehaviour
         {
             ClearPanelOverviewList();
             CreatePanelList();
-            //alternative: just create one extra button here ?
         }
     }
 
@@ -173,7 +170,6 @@ public class UICreation : MonoBehaviour
     private void SpawnTwoButtons()
     {
         GameObject _horizontalLayoutGroup = Instantiate(UITwoButtons, GetChildGameObject(_currentUIPanel, "Canvas").transform);
-        // spawn two buttons with this parent
         GameObject _elementOne = Instantiate(UIButton, _horizontalLayoutGroup.transform);
         _elementOne.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditUIElement(_elementOne));        
         GameObject _elementTwo = Instantiate(UIButton, _horizontalLayoutGroup.transform);
@@ -181,7 +177,7 @@ public class UICreation : MonoBehaviour
 
     }
 
-    public void OnClosePanel() //todo - add to xButtonon Panel when panel is created
+    public void OnClosePanel()
     {
         _currentUIPanel = null;
         EditUIElement.SetActive(false);
@@ -190,11 +186,8 @@ public class UICreation : MonoBehaviour
     //*********** Edit UI Element in Panel
     public void OnEditUIElement(GameObject _objectToBeEdited)
     {
-        Debug.Log("This element called the OnEditUIElement() method: " + _objectToBeEdited.name);
         _gameObjectToEdit = _objectToBeEdited;
         EditUIElement.SetActive(true);
-        Debug.Log("Element to reposition: " + EditUIElement.name);
-        Debug.Log("Element to position it next to: " + _currentUIPanel.name);
 
         PositionNextTo(EditUIElement, _currentUIPanel);
         GetChildTMPText(EditUIElement, "Header").SetText(_objectToBeEdited.name);
@@ -224,16 +217,27 @@ public class UICreation : MonoBehaviour
 
     public void OnDuplicate()
     {
-        GameObject _clone = Instantiate(_gameObjectToEdit, GetChildGameObject(_currentUIPanel, "Canvas").transform); 
-        _clone.GetComponent<PressableButton>().OnClicked.AddListener(() => OnEditUIElement(_clone));
-        //workaroud: spawn new button and name the same and set text to same value !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+        switch (_gameObjectToEdit.tag)
+        {
+            case "Button":
+                SpawnElement(_gameObjectToEdit.name, UIButton);
+                break;
+            case "Text":
+                SpawnElement(_gameObjectToEdit.name, UIText);
+                break;
+        }
+        //todo - fix this
+        //workaroud to avoid white highlighting of buttons when original is deleted after duplicating it:
+        //spawn new button/ text button and name the same and set text to same value
+        // how to differenciate betwenn button and text? maybe via type?
+        // edge case: duplicate a button in horizontal layout group - button is spawned weirdly below panel
     }
 
     public void OnEdit()
     {
         _updateUIElement = true;
         OpenTextEnterWindow("please enter new text here");
-        TextEnterWindowText.text =_gameObjectToEdit.name; // check if name is right or need to get text component ---
+        TextEnterWindowText.text =_gameObjectToEdit.name;
     }
 
     private void EditNameOfObject(string _newName)
@@ -312,13 +316,16 @@ public class UICreation : MonoBehaviour
     {
         _updateUIPanel = true;
         OpenTextEnterWindow("please enter new name for panel here");
-        TextEnterWindowText.text = _gameObjectToEdit.name;  // check if name is right or need to get text component ---
+        TextEnterWindowText.text = _gameObjectToEdit.name;
     }
 
     public void OnOpenPanel()
     {
         _currentUIPanel.SetActive(true);
-        //todo - cover case that you open panel from overview list, then click on another panel in list, close list and want to edit open panel - then _current panel is not set 
+        //this covers not set current panel in case: that you open panel from overview list,
+        //then click on another panel in list, close list and want to edit the already opened panel - then _current panel is not set
+        EditUIPanel.SetActive(false);
+        PanelOverview.SetActive(false);
     }
 
     //utility
