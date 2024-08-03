@@ -93,9 +93,9 @@ public class SpeechAnnotations : MonoBehaviour
     //********************** 
 
     //** Create Annotation - Called via Annotation Button when Object Is Selected
-    public void CreateAnnotation(GameObject _objectToBeAnnotated) //todo - how to add object here? -> selectionManager for selected objects must call this method
+    public void CreateAnnotation(GameObject _objectToBeAnnotated)
     {
-        //todo - place text input window next to Calling Element
+        PositionNextTo(AnnotationNameWindow, _objectToBeAnnotated);
         AnnotationNameWindow.SetActive(true);
         _currentObjectToBeAnnotated = _objectToBeAnnotated;
         _currentAnnotation = Instantiate(AnnotationObject, _objectToBeAnnotated.transform);
