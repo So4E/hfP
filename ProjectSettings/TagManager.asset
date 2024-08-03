@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Button
   - Text
+  - Cube
+  - Sphere
+  - Cylinder
+  - Capsule
   layers:
   - Default
   - TransparentFX
