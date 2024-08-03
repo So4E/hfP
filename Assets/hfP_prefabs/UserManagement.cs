@@ -10,12 +10,13 @@ public class UserManagement : MonoBehaviour
 
     private GameObject _selectedUser;
     private string _userWarning = "Are you sure you want to disconnect ";
+    private string _testUserName = "Tester*in";
 
     public void ReallyWantToDisconnect(GameObject _user)
     {
         _selectedUser = _user;
         UserWarningDisconnect.SetActive(true);
-        if(_user.name == "Tester 1")
+        if(_user.name == _testUserName)
         {
             UserWarningMessage.text = _userWarning + "yourself from this project AND EXIT THIS PROJECT?";
             return;
@@ -32,7 +33,7 @@ public class UserManagement : MonoBehaviour
     //Mock Disconnect
     public void DisconnectUser()
     {
-        if (_selectedUser.name == "Tester 1")
+        if (_selectedUser.name == _testUserName)
         {
             //todo - close all windows and start again with onboarding -- mock option: end application and start again manually?
             return;
