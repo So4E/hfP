@@ -12,17 +12,13 @@ public class SelectionManagement : MonoBehaviour
     [SerializeField] private GameObject ObjectsParent;
     [SerializeField] private GameObject AnnotationManager;
 
+    [SerializeField] private GameObject EmptyGameObject;
     [SerializeField] private GameObject Cube;
     [SerializeField] private GameObject Sphere;
     [SerializeField] private GameObject Cylinder;
     [SerializeField] private GameObject Capsule;
 
-
     private GameObject _selectedObject;
-
-    public void Start()
-    {
-    }
 
     public void OnSelectObject(GameObject _object)
     {
@@ -37,7 +33,7 @@ public class SelectionManagement : MonoBehaviour
 
     public void OnDuplicateObject()
     {
-        /*--- APPROACH 1 ---
+        // --- APPROACH 1 --- (workaround for cloning)
         GameObject _rootObject = null;
         switch (_selectedObject.tag)
         {
@@ -53,18 +49,20 @@ public class SelectionManagement : MonoBehaviour
             case "Capsule":
                 _rootObject = Capsule;
                 break;
+            case "Empty":
+                _rootObject = EmptyGameObject;
+                break;
         }
 
         //instantiating root object because cloning _selectedObject will result in Select Exit Error for Input Manager due to confusion that both object and clone are/ were selected
         GameObject _clone = Instantiate(_rootObject, (_selectedObject.transform.position + _selectedObject.transform.right * - .3f), _selectedObject.transform.rotation, ObjectsParent.transform);
         _clone.transform.localScale = _selectedObject.transform.localScale;
+        _clone.SetActive(true);
         //if this method will be used: todo: transfer also other object info into this new object -> if cloning _selectedObject to avoid that - find out how to work around selection error described above
 
-        //todo -- add OnSelectObject() method to _clone so that menu is shown next to it when selected --- cannot find any method to access like this to add ...
-        //_clone.GetComponent<BoundsControl>().ManipulationStarted().AddListener(() => OnSelectObject(_clone));*/
 
 
-        //--- APPROACH 2 ---
+        /*--- APPROACH 2 ---
 
         //second approach - back to cloning
         GameObject _clone = Instantiate(_selectedObject, (_selectedObject.transform.position + _selectedObject.transform.right * -.3f), _selectedObject.transform.rotation, ObjectsParent.transform);
@@ -72,6 +70,7 @@ public class SelectionManagement : MonoBehaviour
         _clone.GetComponent<BoundsControl>().RecomputeBounds();
 
         //PROBLEM: how to address this issue when istanciating objects, method needs to be in there then.. 
+        */
     }
 
     public void OnOpenInspector()

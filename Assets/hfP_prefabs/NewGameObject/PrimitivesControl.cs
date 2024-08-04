@@ -5,6 +5,7 @@ using UnityEngine;
 public class PrimitivesControl : MonoBehaviour
 {
     [SerializeField] private GameObject ObjectsParentInScene;
+    [SerializeField] private GameObject EmptyGameObject;
     [SerializeField] private GameObject Cube;
     [SerializeField] private GameObject Sphere;
     [SerializeField] private GameObject Cylinder;
@@ -30,6 +31,9 @@ public class PrimitivesControl : MonoBehaviour
                 break;
             case "Capsule":
                 _rootObject = Capsule;
+                break;
+            case "Empty":
+                _rootObject = EmptyGameObject;
                 break;
         }
         GameObject _spawnedObject = Instantiate(_rootObject, _theObjectsNewGlobalPosition, Quaternion.identity, ObjectsParentInScene.transform);
