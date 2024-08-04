@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using MixedReality.Toolkit.SpatialManipulation;
+
 
 public class SelectionManagement : MonoBehaviour
 {
@@ -35,6 +37,7 @@ public class SelectionManagement : MonoBehaviour
 
     public void OnDuplicateObject()
     {
+        /*--- APPROACH 1 ---
         GameObject _rootObject = null;
         switch (_selectedObject.tag)
         {
@@ -51,14 +54,24 @@ public class SelectionManagement : MonoBehaviour
                 _rootObject = Capsule;
                 break;
         }
+
         //instantiating root object because cloning _selectedObject will result in Select Exit Error for Input Manager due to confusion that both object and clone are/ were selected
         GameObject _clone = Instantiate(_rootObject, (_selectedObject.transform.position + _selectedObject.transform.right * - .3f), _selectedObject.transform.rotation, ObjectsParent.transform);
         _clone.transform.localScale = _selectedObject.transform.localScale;
+        //if this method will be used: todo: transfer also other object info into this new object -> if cloning _selectedObject to avoid that - find out how to work around selection error described above
 
-        //HIER WEITERMACHEN
-        //todo -- add OnSelectObject() method to _clone so that menu is shown next to it when selected
+        //todo -- add OnSelectObject() method to _clone so that menu is shown next to it when selected --- cannot find any method to access like this to add ...
+        //_clone.GetComponent<BoundsControl>().ManipulationStarted().AddListener(() => OnSelectObject(_clone));*/
 
-        //todo transfer also other object info into this new object
+
+        //--- APPROACH 2 ---
+
+        //second approach - back to cloning
+        GameObject _clone = Instantiate(_selectedObject, (_selectedObject.transform.position + _selectedObject.transform.right * -.3f), _selectedObject.transform.rotation, ObjectsParent.transform);
+        Destroy(_clone.transform.GetChild(2).gameObject);
+        _clone.GetComponent<BoundsControl>().RecomputeBounds();
+
+        //PROBLEM: how to address this issue when istanciating objects, method needs to be in there then.. 
     }
 
     public void OnOpenInspector()
