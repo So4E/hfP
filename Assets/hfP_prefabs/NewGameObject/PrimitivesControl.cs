@@ -5,60 +5,36 @@ using UnityEngine;
 public class PrimitivesControl : MonoBehaviour
 {
     [SerializeField] private GameObject ObjectsParentInScene;
-    [SerializeField] private GameObject NewObjectUI;
-    [SerializeField] private GameObject UIParentOfObjectToControl;
+    [SerializeField] private GameObject Cube;
+    [SerializeField] private GameObject Sphere;
+    [SerializeField] private GameObject Cylinder;
+    [SerializeField] private GameObject Capsule;
 
-    private GameObject _thisInteractableObject;
-    private Vector3 _ParentPositionInUI = new Vector3(0,0,0);
-    private Vector3 _theObjectsLocalPosition;
     private Vector3 _theObjectsNewGlobalPosition;
 
-
-
-    //----------------------- hier weitermachen: todo: check, ob wenn ich den cube wegbewege, sich die local Position des parentUIObjects überhaupt ändert,
-    //oder ob ich nur das child verschiebe, je nachdem methoden unten anpassen!! 
-
-    void OnEnable()
+    //MRTK Events --> IsGrabSelected()
+    public void OnGrabSelectExited(GameObject _BoundsControlObject)
     {
-        if(_ParentPositionInUI == new Vector3(0,0,0))
+        _theObjectsNewGlobalPosition = _BoundsControlObject.transform.position; //check if moved if parent moves or only object
+        GameObject _rootObject = null;
+        switch (_BoundsControlObject.tag)
         {
-            _ParentPositionInUI = UIParentOfObjectToControl.transform.localPosition;
+            case "Cube":
+                _rootObject = Cube;
+                break;
+            case "Sphere":
+                _rootObject = Sphere;
+                break;
+            case "Cylinder":
+                _rootObject = Cylinder;
+                break;
+            case "Capsule":
+                _rootObject = Capsule;
+                break;
         }
-        Vector3 _thisObjectsLocalPosition = UIParentOfObjectToControl.transform.localPosition;
-        Debug.Log(UIParentOfObjectToControl.name + "'s initial local position: " + _thisObjectsLocalPosition);
-        _thisInteractableObject = UIParentOfObjectToControl.transform.GetChild(0).gameObject;
+        GameObject _spawnedObject = Instantiate(_rootObject, _theObjectsNewGlobalPosition, Quaternion.identity, ObjectsParentInScene.transform);
+        _spawnedObject.SetActive(true);
+        //snap back UIObject to its position
+        _BoundsControlObject.transform.localPosition = new Vector3(0, 0, 0);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(_theObjectsLocalPosition != UIParentOfObjectToControl.transform.localPosition)
-        {
-            Debug.Log(UIParentOfObjectToControl.name + "'s position changed to: " + UIParentOfObjectToControl.transform.localPosition);
-            //if object is x far away from original local Position --- how to check??? 
-            if (CheckIfObjectWasMovedOutOfUI())
-            {
-                //save current parent's global position 
-                _theObjectsNewGlobalPosition = UIParentOfObjectToControl.transform.position;
-
-                //change ObjectsParent to its new parent and change location to saved position (maybe somehow have to adjust localPosition as well?)
-                _thisInteractableObject.gameObject.transform.parent = ObjectsParentInScene.gameObject.transform;
-                _thisInteractableObject.transform.position = _theObjectsNewGlobalPosition;
-
-                //Todo - also adjust scale ?
-
-                //set UIParent to initial position
-                UIParentOfObjectToControl.transform.localPosition = _ParentPositionInUI;
-                //then spawn a new object of the same sort as child in ui
-                //dont forget to reset all relevant variables in this script to null
-            }
-        }
-        Vector3 _UIPosition = NewObjectUI.transform.position;
-    }
-
-    private bool CheckIfObjectWasMovedOutOfUI()
-    {
-        return false;
-    }
-
 }
