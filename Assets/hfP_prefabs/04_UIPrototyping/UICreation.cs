@@ -91,7 +91,7 @@ public class UICreation : MonoBehaviour
     public void OnClickConfirm()
     {
         string _textInput = TextEnterWindowText.text;
-        if (String.IsNullOrEmpty(_textInput)) { _textInput = "new text"; }
+        if (String.IsNullOrEmpty(_textInput)) { _textInput = ""; }
         if (_updateUIElement)
         {
             EditNameOfObject(_textInput);

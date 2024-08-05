@@ -172,6 +172,11 @@ public class SpeechAnnotations : MonoBehaviour
 
     }
 
+    public void StopRecordingAnnotation()
+    {
+        //todo
+    }
+
     // -- Listen Button
     public void PlaySpeechAnnotation()
     {
