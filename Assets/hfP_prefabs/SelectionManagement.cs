@@ -28,7 +28,7 @@ public class SelectionManagement : MonoBehaviour
             SelectMenuHeader.text = _object.name;
         }
         PositionNextTo(SelectMenu, _object);
-        //place selected menu next to object facing user and let it follow along
+        //place selected menu not only next to object but let it face user and follow along with object
     }
 
     public void OnDuplicateObject()
@@ -60,17 +60,12 @@ public class SelectionManagement : MonoBehaviour
         _clone.SetActive(true);
         //if this method will be used: todo: transfer also other object info into this new object -> if cloning _selectedObject to avoid that - find out how to work around selection error described above
 
-
-
         /*--- APPROACH 2 ---
-
         //second approach - back to cloning
         GameObject _clone = Instantiate(_selectedObject, (_selectedObject.transform.position + _selectedObject.transform.right * -.3f), _selectedObject.transform.rotation, ObjectsParent.transform);
         Destroy(_clone.transform.GetChild(2).gameObject);
         _clone.GetComponent<BoundsControl>().RecomputeBounds();
-
-        //PROBLEM: how to address this issue when istanciating objects, method needs to be in there then.. 
-        */
+        //PROBLEM: how to address this issue when istanciating objects, method needs to be in there then.. */
     }
 
     public void OnOpenInspector()
