@@ -91,7 +91,7 @@ public class UICreation : MonoBehaviour
     public void OnClickConfirm()
     {
         string _textInput = TextEnterWindowText.text;
-        if (String.IsNullOrEmpty(_textInput)) { _textInput = ""; }
+        if (String.IsNullOrEmpty(_textInput)) { _textInput = "new text"; }
         if (_updateUIElement)
         {
             EditNameOfObject(_textInput);
@@ -100,7 +100,7 @@ public class UICreation : MonoBehaviour
         }
         if (_updateUIPanel)
         {
-            if(String.IsNullOrEmpty(_textInput)) { _textInput = "updated panelName"; }
+            if(String.IsNullOrEmpty(_textInput)) { _textInput = "updated panelName" + _currentUIPanel.GetInstanceID(); }
             _currentUIPanel.name = _textInput;
             TMP_Text _header = GetChildTMPText(_currentUIPanel, "Header");
             _header.SetText(_currentUIPanel.name);

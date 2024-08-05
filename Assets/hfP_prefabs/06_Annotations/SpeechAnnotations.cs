@@ -8,6 +8,7 @@ using MixedReality.Toolkit.UX;
 public class SpeechAnnotations : MonoBehaviour
 {
     [SerializeField] private GameObject ToolsWindow;
+    [SerializeField] private GameObject SelectionMenu;
     [SerializeField] private GameObject AnnotationNameWindow;
     [SerializeField] private TMP_Text AnnotationNameWindowText;
     [SerializeField] private GameObject AnnotationOverview;
@@ -19,15 +20,12 @@ public class SpeechAnnotations : MonoBehaviour
 
     [SerializeField] private TouchScreenKeyboard keyboard;
 
-
+    private Microphone _microphone;
     private GameObject _currentAnnotation;
-    private GameObject _currentObjectToBeAnnotated; //not needed? 
-
-    private List<AudioClip> _createdAudioClips = new List<AudioClip>();
+    private GameObject _currentObjectToBeAnnotated;
     private List<GameObject> _createdAnnotations = new List<GameObject>();
-    //better have key value store of object and attached audioClips - OR
-    // add recorded audio clip as audio source to annotation prefab, and save it as child of object
-    //
+    private bool _comingFromAnnotationOverview = false;
+    private bool _comingFromObject = false;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +33,7 @@ public class SpeechAnnotations : MonoBehaviour
         foreach (string device in Microphone.devices)
         {
             Debug.Log("Name: " + device);
+            //todo save microphone as microphone to use for recording?
         }
     }
 
@@ -86,8 +85,27 @@ public class SpeechAnnotations : MonoBehaviour
     private void OnOpenAnnotationFromList(GameObject _annotationButton)
     {
         AnnotationControlWindow.SetActive(true);
-        //set header to name
-        //get currentAnnotation from list and save to edit
+        _comingFromAnnotationOverview = true;
+        TMP_Text _annotationName = GetChildTMPText(_annotationButton, "TextText");
+        _currentAnnotation = FindAnnotationOnList(_annotationName.text);
+        if (_currentAnnotation == null) { 
+            Debug.Log("object " + _annotationName + " not found.");
+            return;
+        }
+        AnnotationControlWindowObjectText.SetText(" * " + _currentAnnotation.name + " * ");
+        _currentObjectToBeAnnotated = _currentAnnotation.transform.parent.gameObject;
+    }
+
+    private GameObject FindAnnotationOnList(string _annotationName)
+    {
+        for (int i = 0; i < _createdAnnotations.Count; i++)
+        {
+            if (_createdAnnotations[i].name == _annotationName)
+            {
+                return _createdAnnotations[i].gameObject;
+            }
+        }
+        return null;
     }
 
     //********************** 
@@ -97,24 +115,46 @@ public class SpeechAnnotations : MonoBehaviour
     {
         PositionNextTo(AnnotationNameWindow, _objectToBeAnnotated);
         AnnotationNameWindow.SetActive(true);
+        SelectionMenu.SetActive(false);
         _currentObjectToBeAnnotated = _objectToBeAnnotated;
-        _currentAnnotation = Instantiate(AnnotationObject, _objectToBeAnnotated.transform);
+        _currentAnnotation = Instantiate(AnnotationObject, _currentObjectToBeAnnotated.transform);
         _createdAnnotations.Add(_currentAnnotation);
         //now waiting for user to input name and confirm
     }
 
     public void OnExitNameOfAnnotation()
     {
-        //todo - find object on list first and delete from list - otherwise a list element which is null remains?
+        bool _deletedFromList = DeleteAnnotationFromList(_currentAnnotation);
+        if (!_deletedFromList) { Debug.Log("Error: Did not find current annotation on list to delete it. Please debug."); }
         Destroy(_currentAnnotation);
+        SelectionMenu.SetActive(true);
     }
+
+    private bool DeleteAnnotationFromList(GameObject _nameOfObjectToFind)
+    {
+        for (int i = 0; i < _createdAnnotations.Count; i++)
+        {
+            if (_createdAnnotations[i] == _nameOfObjectToFind)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void OnConfirmNameOfAnnotation()
     {
         string _textInput = AnnotationNameWindowText.text;
-        _currentAnnotation.name = "Annotation_" + _textInput;
+        //if input is empty or name is already taken, reset it automatically:
+        if (string.IsNullOrEmpty(_textInput) && FindAnnotationOnList(_textInput) != null) { 
+            _textInput = "new Annotation_" + _currentAnnotation.GetInstanceID(); 
+        }
+        _currentAnnotation.name = _textInput;
+        PositionNextTo(AnnotationControlWindow, _currentObjectToBeAnnotated);
         AnnotationControlWindow.SetActive(true);
         AnnotationControlWindowObjectText.SetText(" * " + _currentAnnotation.name + " * ");
+        _comingFromObject = true;
     }
 
     //********************** 
@@ -125,8 +165,8 @@ public class SpeechAnnotations : MonoBehaviour
     {
         AudioSource aud = GetComponent<AudioSource>();
         aud.clip = Microphone.Start("Built-in Microphone", true, 10, 44100); //public static AudioClip Start(string deviceName, bool loop, int lengthSec, int frequency); 
-        _createdAudioClips.Add(aud.clip);
-        //audio clip iwo abspeichern in ordnerstruktur?
+
+        //audio clip iwo abspeichern in ordnerstruktur
         //TODO ------------------ create object in scene to which audio is attached, that can be clicked on to har audio/ edit/ rerecord etc. 
         //_currentAnnotation - audio clip komponente finden, clip adden
 
@@ -135,31 +175,51 @@ public class SpeechAnnotations : MonoBehaviour
     // -- Listen Button
     public void PlaySpeechAnnotation()
     {
-        // _currentAnnotation daraus audioClipComponente, dann  audioClip.Play();
+        _currentAnnotation.transform.GetComponent<AudioSource>().Play();
     }
     
     // -- Delete Button
     public void DeleteSpeechAnnotation()
     {
-        //delete audio button from list and object in scene  und audio clip von audioclip liste und aus ordnerstruktur
-        //close all windows to edit this audio file
-        //set currentAnnotation to null
+        //delete audio file in folder where it was saved
+        DeleteAnnotationFromList(_currentAnnotation);
+        Destroy(_currentAnnotation);
+        AnnotationControlWindow.SetActive(false);
     }
 
     // -- Save Button
+    public void SaveSpeechAnnotation()
+    {
+        _currentAnnotation.SetActive(true);
+        CloseAnnotationControlWindow();
+    }
 
+    public void CloseAnnotationControlWindow()
+    {
+        _currentAnnotation = null;
+        if (_comingFromAnnotationOverview)
+        {
+            OpenAllAnnotationsList();
+            _comingFromAnnotationOverview = false;
+        }
+        if (_comingFromObject)
+        {
+            SelectionMenu.SetActive(true);
+            PositionNextTo(SelectionMenu, _currentObjectToBeAnnotated);
+            _comingFromObject = false;
+        }
+        _currentObjectToBeAnnotated = null;
+        AnnotationControlWindow.SetActive(false);
+    }
 
     //********************** 
 
-
     //utility
-
     private void PositionNextTo(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
     {
         _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
         _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.right * .3f;
     }
-
 
     //changed version of script by Author: Isaac Dart, June-13. (see UICreation Script for more Info)
     private TMP_Text GetChildTMPText(GameObject fromGameObject, string withName)
@@ -168,5 +228,4 @@ public class SpeechAnnotations : MonoBehaviour
         foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject.GetComponent<TMP_Text>();
         return null;
     }
-
 }
