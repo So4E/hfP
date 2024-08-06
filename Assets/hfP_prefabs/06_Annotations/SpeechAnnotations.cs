@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -70,6 +71,16 @@ public class SpeechAnnotations : MonoBehaviour
     {
         for (int i = 0; i < _createdAnnotations.Count; i++)
         {
+            //check if object and with that annotation might have been deleted. if so remove from list and break -> next item at this index also has to be checked
+            try{
+                string _name = _createdAnnotations[i].name;
+            } catch(Exception _MissingReferenceException)
+            {
+                _createdAnnotations.RemoveAt(i);
+                i--;
+                break;
+            }
+
             //create one annotation button for each name in list
             GameObject _annotationButtonElement = Instantiate(AnnotationButton, AnnotationButtonParent.transform);
             _annotationButtonElement.GetComponent<PressableButton>().OnClicked.AddListener(() => OnOpenAnnotationFromList(_annotationButtonElement));
@@ -127,6 +138,7 @@ public class SpeechAnnotations : MonoBehaviour
     {
         SelectionMenu.SetActive(true);
         CloseAnnotationControlWindow();
+        AnnotationNameWindow.SetActive(false);
     }
 
     public void OnConfirmNameOfAnnotation()
