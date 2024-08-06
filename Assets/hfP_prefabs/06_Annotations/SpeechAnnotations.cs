@@ -144,6 +144,8 @@ public class SpeechAnnotations : MonoBehaviour
     public void OnConfirmNameOfAnnotation()
     {
         GameObject _newAnnotation = Instantiate(AnnotationObject, _currentObjectToBeAnnotated.transform);
+        _newAnnotation.GetComponent<PressableButton>().OnClicked.AddListener(() => PlayAnnotationAudio(_newAnnotation));
+
         _currentAnnotation = _newAnnotation;
         string _textInput = AnnotationNameWindowText.text;
         Debug.Log("this is textInput in OnConfirmNameOfAnnotation() " + _textInput);
@@ -236,6 +238,17 @@ public class SpeechAnnotations : MonoBehaviour
         }
         _currentObjectToBeAnnotated = null;
         AnnotationControlWindow.SetActive(false);
+    }
+
+    //********************** 
+
+
+    //********** SpeechAnnotation Object above GameObject
+    
+    public void PlayAnnotationAudio(GameObject _annotationObject)
+    {
+        //todo - what if there is no audio yet? - does not throw an error?
+        _annotationObject.GetComponent<AudioSource>().Play();
     }
 
     //********************** 
