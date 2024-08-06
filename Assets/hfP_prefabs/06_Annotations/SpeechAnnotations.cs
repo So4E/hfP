@@ -179,7 +179,7 @@ public class SpeechAnnotations : MonoBehaviour
     {
         AudioSource aud = _currentAnnotation.GetComponent<AudioSource>();
         //public static AudioClip Start(string deviceName, bool loop, int lengthSec, int frequency); 
-        aud.clip = Microphone.Start("Microphone (High Definition Audio Device)", true, 10, 44100);
+        aud.clip = Microphone.Start("", true, 10, 44100);
     }
 
     public void StopRecordingAnnotation()
