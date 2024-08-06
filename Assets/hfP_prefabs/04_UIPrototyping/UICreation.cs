@@ -226,11 +226,6 @@ public class UICreation : MonoBehaviour
                 SpawnElement(_gameObjectToEdit.name, UIText);
                 break;
         }
-        //todo - fix this
-        //workaroud to avoid white highlighting of buttons when original is deleted after duplicating it:
-        //spawn new button/ text button and name the same and set text to same value
-        // how to differenciate betwenn button and text? maybe via type?
-        // edge case: duplicate a button in horizontal layout group - button is spawned weirdly below panel
     }
 
     public void OnEdit()

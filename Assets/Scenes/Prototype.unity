@@ -32698,7 +32698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1249426593925933595, guid: a68d24a3ab809db4cbc2a54f149ba341, type: 3}
       propertyPath: m_text
-      value: Speech Annotations
+      value: All Speech Annotations
       objectReference: {fileID: 0}
     - target: {fileID: 1548012790583813794, guid: a68d24a3ab809db4cbc2a54f149ba341, type: 3}
       propertyPath: m_Name
@@ -43003,7 +43003,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8894268432447120031, guid: 949dff6849b76334b85055130b8df5af, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 102.5
       objectReference: {fileID: 0}
     - target: {fileID: 8894268432447120031, guid: 949dff6849b76334b85055130b8df5af, type: 3}
       propertyPath: m_AnchoredPosition.y

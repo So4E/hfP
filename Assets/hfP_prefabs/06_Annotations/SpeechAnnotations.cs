@@ -27,7 +27,6 @@ public class SpeechAnnotations : MonoBehaviour
     private List<GameObject> _createdAnnotations = new List<GameObject>();
     private bool _comingFromAnnotationOverview = false;
     private bool _comingFromObject = false;
-    private bool _comingFromFlyingAnnotation = false;
     private AudioSource _testRecordAnnotation;
 
     // Start is called before the first frame update
@@ -53,8 +52,14 @@ public class SpeechAnnotations : MonoBehaviour
     //** All Annotations List - Called via Tools
     public void OpenAllAnnotationsList()
     {
-        AnnotationOverview.SetActive(true);
+        ReloadOverView();
         PositionNextTo(AnnotationOverview, ToolsWindow);
+
+    }
+
+    private void ReloadOverView()
+    {
+        AnnotationOverview.SetActive(true);
         ClearAnnotationOverviewList();
         CreateAnnotationList();
     }
@@ -91,7 +96,6 @@ public class SpeechAnnotations : MonoBehaviour
 
             TMP_Text _annotatedObject = GetChildTMPText(_annotationButtonElement, "ObjectText");
             _annotatedObject.SetText(_createdAnnotations[i].transform.parent.gameObject.name);
-            _annotationButtonElement.name = _annotatedObject.text;
         }
     }
 
@@ -148,15 +152,17 @@ public class SpeechAnnotations : MonoBehaviour
 
         _currentAnnotation = _newAnnotation;
         string _textInput = AnnotationNameWindowText.text;
-        Debug.Log("this is textInput in OnConfirmNameOfAnnotation() " + _textInput);
         //if input is empty or name is already taken, reset it automatically:
         if (string.IsNullOrEmpty(_textInput) || FindAnnotationOnList(_textInput) != null) { 
             _textInput = "new Annotation_" + _currentAnnotation.GetInstanceID();
-            Debug.Log("this is new textInput in OnConfirmNameOfAnnotation() because it was empty " + _textInput);
         }
 
         _currentAnnotation.name = _textInput;
         _createdAnnotations.Add(_currentAnnotation);
+        if (AnnotationOverview.activeSelf)
+        {
+            ReloadOverView();
+        }
 
         PositionNextTo(AnnotationControlWindow, _currentObjectToBeAnnotated);
         AnnotationNameWindow.SetActive(false);
@@ -168,20 +174,17 @@ public class SpeechAnnotations : MonoBehaviour
 
     //** Annotation Options - Called via AnnotationControl Window ----------------------------------hier weitermachen """"""""""""""""""""""
 
+    //saves annotation in runtime at annotation object
     public void StartRecordingAnnotation()
     {
         AudioSource aud = _currentAnnotation.GetComponent<AudioSource>();
         //public static AudioClip Start(string deviceName, bool loop, int lengthSec, int frequency); 
         aud.clip = Microphone.Start("Microphone (High Definition Audio Device)", true, 10, 44100);
-        //audio clip iwo abspeichern in ordnerstruktur ?
-        //TODO ------------------ create object in scene to which audio is attached, that can be clicked on to har audio/ edit/ rerecord etc. 
-        //_currentAnnotation - audio clip komponente finden, clip adden
-
     }
 
     public void StopRecordingAnnotation()
     {
-        Microphone.End("Microphone (High Definition Audio Device)"); //if empty string is passed, default microphone will be used !! USE THAT? works also for start 
+        Microphone.End(""); //if empty string is passed, default microphone will be used !! USE THAT? works also for start 
     }
 
     // -- Listen Button
@@ -205,12 +208,24 @@ public class SpeechAnnotations : MonoBehaviour
             {
                 GameObject _annotationObject = _createdAnnotations[i].gameObject;
                 _createdAnnotations.Remove(_createdAnnotations[i].gameObject);
-                //todo - also delete audio file in folder where it was saved
+                DeleteAnnotationButtonFromOverview(_annotationName); //also delete annotation object in overview
                 Destroy(_annotationObject);
                 return true;
             }
         }
         return false;
+    }
+
+    private void DeleteAnnotationButtonFromOverview(string _annotationName)
+    {
+        foreach(Transform t in AnnotationButtonParent.transform)
+        {
+            if(t.gameObject.name == _annotationName)
+            {
+                Destroy(t.gameObject);
+                return;
+            }
+        }
     }
 
     // -- Save Button
@@ -227,7 +242,7 @@ public class SpeechAnnotations : MonoBehaviour
         _currentAnnotation = null;
         if (_comingFromAnnotationOverview)
         {
-            OpenAllAnnotationsList();
+            ReloadOverView();
             _comingFromAnnotationOverview = false;
         }
         if (_comingFromObject)
@@ -236,6 +251,7 @@ public class SpeechAnnotations : MonoBehaviour
             PositionNextTo(SelectionMenu, _currentObjectToBeAnnotated);
             _comingFromObject = false;
         }
+        StopRecordingAnnotation();
         _currentObjectToBeAnnotated = null;
         AnnotationControlWindow.SetActive(false);
     }
