@@ -172,19 +172,19 @@ public class SpeechAnnotations : MonoBehaviour
 
     //********************** 
 
-    //** Annotation Options - Called via AnnotationControl Window ----------------------------------hier weitermachen """"""""""""""""""""""
+    //** Annotation Options - Called via AnnotationControl Window
 
     //saves annotation in runtime at annotation object
     public void StartRecordingAnnotation()
     {
         AudioSource aud = _currentAnnotation.GetComponent<AudioSource>();
-        //public static AudioClip Start(string deviceName, bool loop, int lengthSec, int frequency); 
+        //public static AudioClip Start(string deviceName, bool loop, int lengthSec, int frequency); emptyDevice name = default microphone
         aud.clip = Microphone.Start("", true, 10, 44100);
     }
 
     public void StopRecordingAnnotation()
     {
-        Microphone.End(""); //if empty string is passed, default microphone will be used !! USE THAT? works also for start 
+        Microphone.End(""); //if empty string is passed, default microphone is used  
     }
 
     // -- Listen Button
