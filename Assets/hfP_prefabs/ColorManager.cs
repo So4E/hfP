@@ -19,6 +19,7 @@ public class ColorManager : MonoBehaviour
     {
         ColorPickerWindow.SetActive(true);
         PositionAbove(ColorPickerWindow, SelectionMenu);
+        _selectedObject = _objectSelected;
         //get color of object selected and display?
     }
 
@@ -36,6 +37,14 @@ public class ColorManager : MonoBehaviour
         GUIUtility.systemCopyBuffer = _colorhex;
     }
 
+    public void OnApplyColor()
+    {
+        // --------------- TODO
+        //get color component in object and set color
+        //_selectedObject.transform.GetChild(0).GetComponent<Default-Material>().SetColor("Color", _colorSelected);
+        //**************** component not existent.. how to change default color? 
+    }
+
     public void OnCloseColorPicker()
     {
         _selectedObject = null;
@@ -50,6 +59,6 @@ public class ColorManager : MonoBehaviour
     private void PositionAbove(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
     {
         _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
-        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.up * .3f;
+        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.up * .25f;
     }
 }

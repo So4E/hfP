@@ -11,6 +11,7 @@ public class SelectionManagement : MonoBehaviour
     [SerializeField] private TMP_Text SelectMenuHeader;
     [SerializeField] private GameObject ObjectsParent;
     [SerializeField] private GameObject AnnotationManager;
+    [SerializeField] private GameObject ColorManager;
 
     [SerializeField] private GameObject EmptyGameObject;
     [SerializeField] private GameObject Cube;
@@ -75,7 +76,7 @@ public class SelectionManagement : MonoBehaviour
 
     public void OnOpenColorPicker()
     {
-        //todo - open colour picker tool to enable selection of different object color
+        ColorManager.gameObject.GetComponent< ColorManager>().OnOpenColorPicker(_selectedObject);
     }
 
     public void OnAnnotateObject()
