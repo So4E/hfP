@@ -102,6 +102,7 @@ public class SpeechAnnotations : MonoBehaviour
     private void OnOpenAnnotationFromList(GameObject _annotationButton)
     {
         AnnotationControlWindow.SetActive(true);
+        PositionNextTo(AnnotationControlWindow, AnnotationOverview);
         _comingFromAnnotationOverview = true;
         TMP_Text _annotationName = GetChildTMPText(_annotationButton, "TextText");
         _currentAnnotation = FindAnnotationOnList(_annotationName.text);
@@ -164,7 +165,7 @@ public class SpeechAnnotations : MonoBehaviour
             ReloadOverView();
         }
 
-        PositionNextTo(AnnotationControlWindow, _currentObjectToBeAnnotated);
+        PositionAboveOf(AnnotationControlWindow, SelectionMenu);
         AnnotationNameWindow.SetActive(false);
         AnnotationControlWindow.SetActive(true);
         AnnotationControlWindowObjectText.SetText(" * " + _currentAnnotation.name + " * ");
@@ -274,6 +275,12 @@ public class SpeechAnnotations : MonoBehaviour
     {
         _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
         _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.right * .3f;
+    }
+        
+    private void PositionAboveOf(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
+    {
+        _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
+        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.up * .25f;
     }
     
     private void PositionAnnotation(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)

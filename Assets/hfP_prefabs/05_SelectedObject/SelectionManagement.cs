@@ -29,6 +29,7 @@ public class SelectionManagement : MonoBehaviour
             SelectMenuHeader.text = _object.name;
         }
         PositionNextTo(SelectMenu, _object);
+        ColorManager.GetComponent<ColorManager>().OnCloseColorPicker();
         //place selected menu not only next to object but let it face user and follow along with object
     }
 

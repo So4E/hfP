@@ -134,7 +134,7 @@ public class UICreation : MonoBehaviour
          }
 
         GameObject _panel = Instantiate(UIPanel, UIPrototypingParent.transform);
-        PositionNextTo(_panel, TextEnterWindow);
+        PositionAboveOf(_panel, TextEnterWindow);
 
         _panel.name = _title;
         GameObject _xButton = GetChildGameObject(_panel, "x_Action Button");
@@ -329,6 +329,12 @@ public class UICreation : MonoBehaviour
     {
         _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
         _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.right * .3f;
+    }
+
+    private void PositionAboveOf(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
+    {
+        _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
+        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.up * .25f;
     }
 
     private GameObject GetChildGameObject(GameObject fromGameObject, string withName)
