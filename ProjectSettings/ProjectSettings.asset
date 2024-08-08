@@ -136,7 +136,11 @@ PlayerSettings:
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
   bundleVersion: 0.1
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 11400000, guid: c677e5c4eb85b7849a8da406775c299d, type: 2}
+  - {fileID: 9022152339937249572, guid: b2c99329ba176fe4b9988ba4753b0e10, type: 2}
+  - {fileID: 11400000, guid: db7cde3a5e6eed249ba2111b5fe7caa6, type: 2}
+  - {fileID: -3574590851067789326, guid: 47e30ac50869b464fb39e489021e1c13, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -678,11 +682,11 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: hfP
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: 
+  metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
+  metroCertificateSubject: DefaultCompany
+  metroCertificateIssuer: DefaultCompany
+  metroCertificateNotAfter: 803381b6e807dc01
   metroApplicationDescription: hfP
   wsaImages: {}
   metroTileShortName: hfP
