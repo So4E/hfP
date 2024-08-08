@@ -41,8 +41,9 @@ public class ColorManager : MonoBehaviour
     {
         // --------------- TODO
         //get color component in object and set color
-        //_selectedObject.transform.GetChild(0).GetComponent<Default-Material>().SetColor("Color", _colorSelected);
-        //**************** component not existent.. how to change default color? 
+        GameObject _primitive = _selectedObject.transform.GetChild(0).gameObject;
+        var _cubeRenderer = _primitive.GetComponent<Renderer>();
+        _cubeRenderer.material.SetColor("_Color", _colorSelected);
     }
 
     public void OnCloseColorPicker()
