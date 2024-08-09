@@ -128,13 +128,15 @@ public class UICreation : MonoBehaviour
 
     private void SpawnUIPanel(string _title)
     {
-         if (String.IsNullOrEmpty(_title))
-         {
-             _title = "new panel";
-         }
+
 
         GameObject _panel = Instantiate(UIPanel, UIPrototypingParent.transform);
         PositionAboveOf(_panel, TextEnterWindow);
+
+        if (String.IsNullOrEmpty(_title))
+        {
+            _title = "new panel" + _panel.GetInstanceID();
+        }
 
         _panel.name = _title;
         GameObject _xButton = GetChildGameObject(_panel, "x_Action Button");
@@ -334,7 +336,7 @@ public class UICreation : MonoBehaviour
     private void PositionAboveOf(GameObject _objectToRelocate, GameObject _objectToPositionItNextTo)
     {
         _objectToRelocate.transform.rotation = _objectToPositionItNextTo.transform.rotation;
-        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.up * .25f;
+        _objectToRelocate.transform.position = _objectToPositionItNextTo.transform.position + _objectToPositionItNextTo.transform.up * .15f;
     }
 
     private GameObject GetChildGameObject(GameObject fromGameObject, string withName)
